@@ -1,6 +1,7 @@
 from project.config import config
-from project.models import Genre
-from project.server import create_app, db
+from project.models import Genre, Movie, Director, User, Favorite
+from project.server import create_app
+from project.setup.db import db
 
 app = create_app(config)
 
@@ -10,4 +11,12 @@ def shell():
     return {
         "db": db,
         "Genre": Genre,
+        "Movie": Movie,
+        "Director": Director,
+        "User": User,
+        "Favorites": Favorite
     }
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

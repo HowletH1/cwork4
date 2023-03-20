@@ -1,5 +1,4 @@
 from typing import Generic, List, Optional, TypeVar
-
 from flask import current_app
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy.orm import scoped_session
@@ -22,6 +21,10 @@ class BaseDAO(Generic[T]):
     def get_by_id(self, pk: int) -> Optional[T]:
         return self._db_session.query(self.__model__).get(pk)
 
+    def get_by_pk(self, pk: int):
+        obj = self._db_session.query(self.__model__).filter(self.__model__.id == pk).first()
+        return obj
+
     def get_all(self, page: Optional[int] = None) -> List[T]:
         stmt: BaseQuery = self._db_session.query(self.__model__)
         if page:
@@ -29,4 +32,9 @@ class BaseDAO(Generic[T]):
                 return stmt.paginate(page, self._items_per_page).items
             except NotFound:
                 return []
+
         return stmt.all()
+
+    @property
+    def db_session(self):
+        return self._db_session
